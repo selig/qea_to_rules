@@ -56,5 +56,5 @@ object Broadcast extends App {
     val rules = labelled_qea_to_rule_system(translated)
     println("=================================================")
     println("RULE SYSTEM")
-    println(rules)
+    println(rules.toLaTeX)
 }

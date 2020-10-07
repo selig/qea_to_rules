@@ -14,7 +14,7 @@ def labelled_qea_to_rule_system(input: LabelledQEA) : RuleSystem = {
   val Y = input.Y.toList.sorted
   
   val rd = input.Q.map{ 
-    case (state,vars) => new RuleExpression("r"+state.name,vars.toList.sorted++Y)}
+    case (state,vars) => new RuleExpression("r_"+state.name,vars.toList.sorted++Y)}
   
   //println("RD")
   //rd.foreach(println)
@@ -37,7 +37,7 @@ def labelled_qea_to_rule_system(input: LabelledQEA) : RuleSystem = {
         if(vars == vars2){          
           var pnew : List[Term] = vars2.toList.sorted 
           pnew ++= Y.map{v : Variable => a.termFor(v)}
-          val re = RuleExpression("r"+state2.name,pnew)
+          val re = RuleExpression("r_"+state2.name,pnew)
           //println("re is "+re)
           right = List(re)
         }
@@ -62,23 +62,23 @@ def labelled_qea_to_rule_system(input: LabelledQEA) : RuleSystem = {
           val re1 = RuleExpression("r_"+state.name,(vars++Y).toList.sorted)
           var pnew : List[Term] = vars2.toList.sorted 
           pnew ++= Y.map{v : Variable => a.termFor(v)}
-          val re2 = RuleExpression("r"+state2.name,pnew)          
+          val re2 = RuleExpression("r_"+state2.name,pnew)          
           right = List(re1,re2)
         }
         
         RuleTerm(left,right)
     }.filter{case rt:RuleTerm =>
-    	!(rt.right.size == 1 && rt.right.head.equals(RuleExpression("r"+state.name,params))) 
+    	!(rt.right.size == 1 && rt.right.head.equals(RuleExpression("r_"+state.name,params))) 
     }
     
-    new RuleDefinition("r"+state.name,params,body)
+    new RuleDefinition("r_"+state.name,params,body)
   }
   
-  val initial : Fact = new Fact(Set(("r"+input.q0._1.name,input.v0)))
+  val initial : Fact = new Fact(Set(("r_"+input.q0._1.name,input.v0)))
   var bad : Set[RuleExpression] = (input.Q -- input.F).filter{
     case (state,vars) => vars==input.X
   }.map{ 
-    case (state,vars) => new RuleExpression("r"+state.name,vars.toList.sorted++Y)}
+    case (state,vars) => new RuleExpression("r_"+state.name,vars.toList.sorted++Y)}
   
   return new RuleSystem(definitions,bad,initial)  
 }
